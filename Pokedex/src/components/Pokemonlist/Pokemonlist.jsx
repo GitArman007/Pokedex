@@ -6,21 +6,31 @@ import Pokemon from "../Pokemon/Pokemon";
  
 function Pokemonlist(){
     const DEFAULT_URL = "https://pokeapi.co/api/v2/pokemon";
-    const [pokedexUrl , setPokedexUrl] = useState(DEFAULT_URL);
-    const [ pokemonList , setpokemonList ] = useState([]);
-    const [ nextUrl , setNextUrl ] = useState(DEFAULT_URL);//load url for the next page
-    const [ prevUrl , setPrevUrl ] = useState(DEFAULT_URL);//load url for the prev page
+    // const [pokedexUrl , setPokedexUrl] = useState(DEFAULT_URL);
+    // const [ pokemonList , setpokemonList ] = useState([]);
+    // const [ nextUrl , setNextUrl ] = useState(DEFAULT_URL); 
+    // const [ prevUrl , setPrevUrl ] = useState(DEFAULT_URL); 
+
+    //maintaining all the state in one block instead of writting separately
+    const[ pokemonListState , setPokemonListState] = useState({
+            pokemonList : [],
+            pokedexUrl : DEFAULT_URL,
+            nextUrl : DEFAULT_URL,
+            prevUrl : DEFAULT_URL
+    })
+
         //we are using axios for downloading data from the Url 
         async function downloadPokemons(){
 
-        const response = await axios.get(pokedexUrl ? pokedexUrl : DEFAULT_URL )
+        const response = await axios.get(pokemonListState.pokedexUrl ? pokemonListState.pokedexUrl : DEFAULT_URL )
             
         //1.here we fetch result from the API . where result = array of pokemon
         const pokemonResults = response.data.results;
 
         //loading next and prev url
-        setNextUrl(response.data.next);
-        setPrevUrl(response.data.previous)
+        // setNextUrl(response.data.next);
+        // setPrevUrl(response.data.previous)
+        // setPokemonListState((state) => ( {...state , nextUrl:response.data.next , nextUrl:response.data.previous }))
 
         //2.loop on this array of pokemon and make calls on the each object of the array = result 
         const pokemonPromise = pokemonResults.map((pokemon) => axios.get(pokemon.url));
@@ -41,7 +51,8 @@ function Pokemonlist(){
         })
         
         //hence set this prepared list to the pokemonlist
-        setpokemonList(pokemonFinalList)
+        // setpokemonList(pokemonFinalList)
+        setPokemonListState({...pokemonListState , pokemonList : pokemonFinalList , nextUrl:response.data.next , prevUrl:response.data.previous })
         }
 
         //everytime the component is rerendered the useffect callback is called 
@@ -50,7 +61,7 @@ function Pokemonlist(){
         //so that useeffect also called 
         useEffect(() => {
                 downloadPokemons();
-        },[pokedexUrl])
+        },[pokemonListState.pokedexUrl])
 
 
         return(
@@ -58,12 +69,12 @@ function Pokemonlist(){
                 <div id="pokemon-list-header">
                     <h1>Pokemonlist</h1>
                      <div className="page-control">
-                        <button onClick={() => setPokedexUrl(prevUrl)}>Prev</button>
-                        <button onClick={() => setPokedexUrl(nextUrl)}>Next</button>
+                        <button onClick={() => setPokemonListState({...pokemonListState , pokedexUrl : pokemonListState.prevUrl })}>Prev</button>
+                        <button onClick={() => setPokemonListState({...pokemonListState , pokedexUrl : pokemonListState.nextUrl })}>Next</button>
                      </div>
                     </div>
                 <div className="pokemon-list">
-                     {pokemonList.map(pokemon => <Pokemon
+                     {pokemonListState.pokemonList.map(pokemon => <Pokemon
                            id={pokemon.id}
                            name={pokemon.name} 
                            key={pokemon.id}
