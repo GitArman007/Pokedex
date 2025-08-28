@@ -1,0 +1,31 @@
+.pokemon{
+    flex-basis: 30%;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    height: 350px;
+    max-width: 400px;
+    margin-top: 4rem;
+    border: 2px solid black;
+    border-radius: 20px;
+    background-color: yellow;
+}
+.pokemon:hover{
+    background-color: rgb(228, 207, 9);
+     box-shadow: 0 0 15px 5px black; /* X-offset Y-offset blur spread color */
+    cursor: pointer; /* optional: makes it look clickable */
+    transition: all 0.3s ease; /* smooth hover effect */
+     
+}
+.pokemon-image{
+    max-height: 50%;
+    min-height: 200px;
+    max-width: 350px;
+    display: block;
+}
+.pokemon-name{
+    letter-spacing: 10px;
+    font-size: larger;
+    margin-bottom: 1rem ;
+    font-weight: bold;
+}
