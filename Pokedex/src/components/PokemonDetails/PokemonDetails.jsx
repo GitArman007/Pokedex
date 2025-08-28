@@ -6,9 +6,9 @@ import { Link  , useParams } from 'react-router-dom';
 import Pokemon from '../Pokemon/Pokemon';
 
 
-function PokemonDetails(){
+function PokemonDetails({ pokemonaName }){
       const{id} = useParams();
-        const[ pokemon , pokemonListState ] = usePokemonDetails(id);
+        const[ pokemon , pokemonListState ] = usePokemonDetails(pokemonaName);
        return (
   <>
     <h1 className='pokedex-redirect'>
